@@ -1,9 +1,23 @@
+:root {
+    --color-bg: #f4f1ec;
+    --color-surface: #fdfbf7;
+    --color-border: #ddd8ce;
+    --color-text: #1a1a1a;
+    --color-muted: #7a746a;
+    --color-accent: #2d4a3e;
+    --color-accent-lt: #3d6b5a;
+    --color-danger: #8b2020;
+    --color-danger-lt: #a83030;
+    --color-tag-bg: #e8e4dc;
+    --color-tag-text: #4a4540;
 
+    --radius: 6px;
+    --radius-lg: 10px;
 
+    --font-display: 'Georgia', serif;
+    --font-body: 'Trebuchet MS', sans-serif;
+}
 
-
-
-/* Diseño responsive  */
 
 /* BASE = mobile */
 .card-grid {
