@@ -1,4 +1,4 @@
-// Estructura base de la UI
+// Estructura base
 export const createLayout = () => {
     const titulo = document.createElement('h1');
     titulo.textContent = 'Posts';
@@ -10,7 +10,7 @@ export const createLayout = () => {
     document.body.appendChild(container); 
 };
 
-// Crear un post en el DOM
+// Crear un post
 export const createPost = (post) => {
     const article = document.createElement("article");
 
@@ -31,6 +31,7 @@ export const createPost = (post) => {
 // Renderizar posts
 export const renderPosts = (posts) => {
     const container = document.getElementById('posts-container');
+    container.innerHTML = '';
 
     posts.forEach(post => {
         const elemento = createPost(post);
@@ -38,7 +39,37 @@ export const renderPosts = (posts) => {
     });
 };
 
-// Eliminar post del DOM
+// Eliminar del DOM
 export const removePostFromDOM = (elemento) => {
     elemento.remove();
+};
+
+// Crear filtros
+export const createFilters = () => {
+    const container = document.createElement('div');
+    container.id = 'filters-container';
+
+// texto
+    const inputFiltroTexto = document.createElement('input');
+    inputFiltroTexto.type = 'text';
+    inputFiltroTexto.placeholder = 'Filtrar por texto...';
+    inputFiltroTexto.id = 'filter-text';
+
+// autor
+    const inputFiltroAutor = document.createElement('input');
+    inputFiltroAutor.type = 'number';
+    inputFiltroAutor.placeholder = 'Filtrar por autor';
+    inputFiltroAutor.id = 'filter-author';
+
+// tags
+    const inputFiltroTags = document.createElement('input');
+    inputFiltroTags.type = 'text';
+    inputFiltroTags.placeholder = 'Filtrar por tags';
+    inputFiltroTags.id = 'filter-tags';
+
+    container.appendChild(inputFiltroTexto);
+    container.appendChild(inputFiltroAutor);
+    container.appendChild(inputFiltroTags);
+
+    document.body.appendChild(container);
 };
