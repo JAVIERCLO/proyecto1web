@@ -1,22 +1,29 @@
-import { deletePost, getPosts } from './api.js';
-import { removePostFromDOM, createLayout, renderPosts, createFilters } from './ui.js';
+import { deletePost, getPosts, getPostById, getUserById } from './api.js';
+import {
+    removePostFromDOM,
+    createLayout,
+    renderPosts,
+    createFilters,
+    showDetailView,
+    showListView,
+} from './ui.js';
 
 // Variables globales
 let listaDePosts = [];
 let filters = {
-    text : '',
-    author : '',
-    tags : ''
+    text: '',
+    author: '',
+    tags: ''
 };
 
-// Inicialización de la página web
+// Inicialización
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         createLayout();
         createFilters();
 
         const posts = await getPosts();
-        listaDePosts = posts; // guardar posts para filtros
+        listaDePosts = posts;
 
         renderPosts(posts);
 
@@ -25,20 +32,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Filtros de busqueda
+// Filtros
 const applyFilters = () => {
     return listaDePosts.filter(post => {
 
-        // Filtro por texto
-        const textMatch = post.title.toLowerCase().includes(filters.text.toLowerCase()) ||
+        const textMatch =
+            post.title.toLowerCase().includes(filters.text.toLowerCase()) ||
             post.body.toLowerCase().includes(filters.text.toLowerCase());
 
-        // Filtro por autor
-        const authorMatch = filters.author === '' || post.userId == filters.author;
+        const authorMatch =
+            filters.author === '' || post.userId == filters.author;
 
-        // Filtro por tags
-        const tagsMatch = filters.tags === '' ||
-            post.tags.some(tag =>
+        const tagsMatch =
+            filters.tags === '' ||
+            (post.tags || []).some(tag =>
                 tag.toLowerCase().includes(filters.tags.toLowerCase())
             );
 
@@ -46,32 +53,12 @@ const applyFilters = () => {
     });
 };
 
-// Actualizar UI con filtros aplicados
+// Actualizar UI
 const updateUI = () => {
-    const filtered = applyFilters();
-    renderPosts(filtered);
+    renderPosts(applyFilters());
 };
 
-// Delete post event listener
-document.addEventListener('click', async (e) => {
-    if (e.target.classList.contains('btn-delete')) {
-
-        const id = e.target.dataset.id;
-        const postElement = e.target.closest('article');
-
-        if (!id || !postElement) return;
-
-        try {
-            await deletePost(id);
-            removePostFromDOM(postElement);
-
-        } catch (error) {
-            console.error('Error al eliminar el post');
-        }
-    }
-});
-
-// Busqueda por texto, autor o tags event listener
+// Inputs filtros
 document.addEventListener('input', (e) => {
 
     if (e.target.id === 'filter-text') {
@@ -87,5 +74,44 @@ document.addEventListener('input', (e) => {
     if (e.target.id === 'filter-author') {
         filters.author = e.target.value;
         updateUI();
+    }
+});
+
+// Clicks
+document.addEventListener('click', async (e) => {
+    const action = e.target.dataset.action;
+    const id = e.target.dataset.id;
+
+    // VER DETALLE
+    if (action === 'ver-detalle') {
+        try {
+            const post = await getPostById(id);
+            const user = await getUserById(post.userId);
+            showDetailView(post, user);
+        } catch (error) {
+            console.error('Error al cargar el detalle');
+        }
+        return;
+    }
+
+    //  ELIMINAR
+    if (action === 'eliminar') {
+        const postElement = e.target.closest('article');
+
+        if (!id || !postElement) return;
+
+        try {
+            await deletePost(id);
+            removePostFromDOM(postElement);
+        } catch (error) {
+            console.error('Error al eliminar el post');
+        }
+        return;
+    }
+
+    //volver
+    if (action === 'volver') {
+        showListView();
+        return;
     }
 });
