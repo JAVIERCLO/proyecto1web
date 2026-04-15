@@ -114,4 +114,19 @@ document.addEventListener('click', async (e) => {
         showListView();
         return;
     }
+
+    // eliminar desde detalle
+    if (action === 'eliminar-detalle') {
+        if (!id) return;
+        try {
+            await deletePost(id);
+            listaDePosts = listaDePosts.filter(p => p.id != id);
+            showListView();
+            renderPosts(applyFilters());
+        }
+        catch (error) {
+            console.error('Error al eliminar el post desde detalle');
+        }  
+        return;
+    }
 });

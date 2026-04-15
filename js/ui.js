@@ -188,12 +188,32 @@ export const showDetailView = (post, user) => {
         item.appendChild(valor);
         metaGrid.appendChild(item);
     });
+
+    const accionesDiv = document.createElement('div');
+    accionesDiv.classList.add('detail-acciones');
+
+    const btnEditar = document.createElement('button');
+    btnEditar.textContent = 'Editar';
+    btnEditar.classList.add('btn', 'btn--secondary');
+    btnEditar.dataset.id = post.id;
+    btnEditar.dataset.action = 'editar';
+
+    const btnEliminar = document.createElement('button');
+    btnEliminar.textContent = 'eliminar';
+    btnEliminar.classList.add('btn', 'btn--danger');
+    btnEliminar.dataset.id = post.id;
+    btnEliminar.dataset.action = 'eliminar-detalle';
+
+    accionesDiv.appendChild(btnEditar);
+    accionesDiv.appendChild(btnEliminar);
+
     // Ensamblar
     section.appendChild(cabecera);
     section.appendChild(titulo);
     section.appendChild(tagsDiv);
     section.appendChild(cuerpo);
     section.appendChild(metaGrid);
+    section.appendChild(accionesDiv);
 
     document.body.appendChild(section);
 };
