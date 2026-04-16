@@ -11,7 +11,8 @@ import {
     showToast,
     showLoader,
     hideLoader,
-    renderPaginationControls      
+    renderPaginationControls,
+    createNavbar,      
 } from './ui.js';
 import { validatePostForm, clearErrors } from './validation.js';
 
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         showLoader();
         const posts = await getPosts();
         listaDePosts = posts;
-
+        createNavbar(listaDePosts);
         updateUI();
         hideLoader();
 
@@ -276,6 +277,34 @@ document.addEventListener('click', async (e) => {
             console.error('Error al actualizar el post');
             showToast('No se pudo actualizar la publicacion.', 'error');
         }
+        return;
+    }
+
+    // navegación inicio
+    if (action === 'nav-inicio') {
+        filters = { text: '', author: '', tags: '' };
+        currentPage = 1;
+        showListView();
+        updateUI();
+        return;
+    }
+
+    // navegación crear
+    if (action === 'nav-crear') {
+        showCreateForm();
+        return;
+    }
+
+    // navegación por autor (RF-08)
+    if (action === 'nav-ordenar-autores') {
+        const ordenados = [...listaDePosts].sort((a, b) => a.userId - b.userId);
+
+        currentPage = 1;
+        showListView();
+
+        renderPosts(paginatePosts(ordenados));
+        renderPaginationControls(ordenados.length, currentPage);
+
         return;
     }
 

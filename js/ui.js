@@ -447,3 +447,31 @@ export const renderPaginationControls = (totalPosts, currentPage) => {
 
     document.body.appendChild(container);
 };
+
+// Navegacion
+export const createNavbar = (posts) => {
+    const nav = document.createElement('nav');
+    nav.id = 'navbar';
+
+    const btnInicio = document.createElement('button');
+    btnInicio.textContent = 'Inicio';
+    btnInicio.dataset.action = 'nav-inicio';
+    btnInicio.classList.add('btn', 'btn--secondary');
+
+    const btnCrear = document.createElement('button');
+    btnCrear.textContent = 'Crear';
+    btnCrear.dataset.action = 'nav-crear';
+    btnCrear.classList.add('btn', 'btn--primary');
+
+    nav.appendChild(btnInicio);
+    nav.appendChild(btnCrear);
+
+    const btnOrdenar = document.createElement('button');
+    btnOrdenar.textContent = 'Ordenar por autor';
+    btnOrdenar.dataset.action = 'nav-ordenar-autores';
+    btnOrdenar.classList.add('btn', 'btn--secondary');
+
+    nav.appendChild(btnOrdenar);
+
+    document.body.prepend(nav);
+};
