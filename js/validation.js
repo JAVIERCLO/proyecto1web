@@ -42,8 +42,13 @@ export const validatePostForm = (formEl) => {
     // El campo autor solo se valida en creacion (no aparece en edicion)
     if (autorEl) {
         if (!autorEl.value.trim()) {
-            showFieldError(autorEl, 'El nombre del autor es obligatorio.');
-            valido = false;
+            if (!valor) {
+                showFieldError(autorEl, 'El ID del autor es obligatirio');
+                valido = false;
+            } else if (isNaN(valor)) {
+                showFieldError(autorEl, 'El ID del autor debe ser un numero');
+                valido = false;
+            }
         }
     }
 

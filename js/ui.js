@@ -23,6 +23,10 @@ export const createPost = (post) => {
     h2.classList.add('post-card__title');
     h2.textContent = post.title;
 
+    const author = document.createElement('p');
+    author.textContent = `Autor: Usuario #${post.userId}`;
+    author.classList.add('post-card__author');
+
     const resumen = document.createElement('p');
     resumen.classList.add('post-card__body');
     resumen.textContent = post.body.length > 250
@@ -57,6 +61,7 @@ export const createPost = (post) => {
     acciones.appendChild(btnEliminar);
 
     article.appendChild(h2);
+    article.appendChild(author);
     article.appendChild(resumen);
     article.appendChild(tags);
     article.appendChild(acciones);
@@ -399,11 +404,11 @@ const crearCampoTextarea = (labelText, inputId, placeholder) => {
 
 // Loader para estado de carga
 export const showLoader = () => {
-    if (document.getElementById('Loader')) return;
+    if (document.getElementById('loader')) return;
 
     const loader = document.createElement('div');
-    loader.id = 'Loader';
-    loader.classList.add('Loader');
+    loader.id = 'loader';
+    loader.classList.add('loader');
     loader.innerHTML = `
         <div class="spinner"></div>
         <span>Cargando...</span>
@@ -413,6 +418,32 @@ export const showLoader = () => {
 
 // Ocultar loader
 export const hideLoader = () => {
-    const loader = document.getElementById('Loader');
+    const loader = document.getElementById('loader');
     if (loader) loader.remove();
+};
+
+//Renderirzar controles de paginacion
+export const renderPaginationControls = (totalPosts, currentPage) => {
+    const old = document.getElementById('pagination');
+    if (old) old.remove();
+
+    const container = document.createElement('div');
+    container.id = 'pagination';
+
+    const totalPages = Math.ceil(totalPosts / 10);
+
+    const prev = document.createElement('button');
+    prev.textContent = 'Anterior';
+    prev.disabled = currentPage === 1;
+    prev.dataset.action = 'prev-page';
+
+    const next = document.createElement('button');
+    next.textContent = 'Siguiente';
+    next.disabled = currentPage === totalPages;
+    next.dataset.action = 'next-page';
+
+    container.appendChild(prev);
+    container.appendChild(next);
+
+    document.body.appendChild(container);
 };

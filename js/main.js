@@ -10,13 +10,16 @@ import {
     showEditForm,    
     showToast,
     showLoader,
-    hideLoader      
+    hideLoader,
+    renderPaginationControls      
 } from './ui.js';
 import { validatePostForm, clearErrors } from './validation.js';
 
 // Estado global
 let listaDePosts = [];
 let filters = { text: '', author: '', tags: '' };
+let currentPage = 1;
+const postsPerPage = 10;
 
 //  Inicializacion
 document.addEventListener('DOMContentLoaded', async () => {
@@ -28,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const posts = await getPosts();
         listaDePosts = posts;
 
-        renderPosts(posts);
+        updateUI();
         hideLoader();
 
     } catch (error) {
@@ -58,14 +61,39 @@ const applyFilters = () => {
     });
 };
 
-const updateUI = () => renderPosts(applyFilters());
+// Actualizar UI con posts paginados
+const updateUI = () => {
+    const filtered = applyFilters();
+    const paginated = paginatePosts(filtered);
+
+    renderPosts(paginated);
+    renderPaginationControls(filtered.length, currentPage);
+};
 
 // Inputs filtros
 document.addEventListener('input', (e) => {
-    if (e.target.id === 'filter-text')   { filters.text   = e.target.value; updateUI(); }
-    if (e.target.id === 'filter-tags')   { filters.tags   = e.target.value; updateUI(); }
-    if (e.target.id === 'filter-author') { filters.author = e.target.value; updateUI(); }
+    if (e.target.id === 'filter-text') 
+        { filters.text = e.target.value;
+            currentPage = 1;
+            updateUI();
+        }
+    if (e.target.id === 'filter-tags') 
+        { filters.tags   = e.target.value;
+            currentPage = 1;
+            updateUI(); }
+    if (e.target.id === 'filter-author') 
+        { filters.author = e.target.value; 
+            currentPage = 1; 
+            updateUI(); 
+        }
 });
+
+// Paginacion
+const paginatePosts = (posts) => {
+    const start = (currentPage - 1) * postsPerPage;
+    const end = start + postsPerPage;
+    return posts.slice(start, end);
+};
 
 // clicks
 document.addEventListener('click', async (e) => {
@@ -134,7 +162,7 @@ document.addEventListener('click', async (e) => {
             await deletePost(id);
             listaDePosts = listaDePosts.filter(p => p.id != id);
             showListView();
-            renderPosts(applyFilters());
+            updateUI();
 
             hideLoader();
 
@@ -161,19 +189,19 @@ document.addEventListener('click', async (e) => {
 
         const titulo = form.querySelector('#form-titulo').value.trim();
         const cuerpo = form.querySelector('#form-cuerpo').value.trim();
-        const autor  = form.querySelector('#form-autor').value.trim();
+        const author  = parseInt(form.querySelector('#form-autor').value.trim());
 
         try {
             showLoader();
 
-            const nuevoPost = await createPost(titulo, cuerpo, autor);
+            const nuevoPost = await createPost(titulo, cuerpo, author);
 
             listaDePosts.unshift(nuevoPost);
 
             hideLoader();
 
             showListView();
-            renderPosts(applyFilters());
+            updateUI();
             showToast('Publicacion creada correctamente.');
         } catch (error) {
             hideLoader();
@@ -249,5 +277,22 @@ document.addEventListener('click', async (e) => {
             showToast('No se pudo actualizar la publicacion.', 'error');
         }
         return;
+    }
+
+    // paginacion
+    if (action === 'next-page') {
+        if (currentPage < Math.ceil(applyFilters().length / postsPerPage)) {
+            currentPage++;
+            updateUI();
+            return;
+        }
+    }
+
+    if (action === 'prev-page') {
+        if (currentPage > 1) {
+            currentPage--;
+            updateUI();
+            return;
+        }
     }
 });
