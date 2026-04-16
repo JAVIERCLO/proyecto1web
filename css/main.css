@@ -18,15 +18,14 @@
     --font-body: 'Trebuchet MS', sans-serif;
 }
 
-
-/* BASE = mobile */
+/* BASE GRID */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 }
 
-/* ── Tablet ≥768px ── */
+/* Tablet */
 @media (min-width: 768px) {
   .card-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -34,10 +33,17 @@
   }
 }
 
-/* ── Desktop ≥1024px ── */
+/* Desktop */
 @media (min-width: 1024px) {
   .card-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
+}
+
+/* Responsive extra */
+@media (max-width: 600px) {
+    .post-card__acciones { flex-direction: column; }
+    .detail-acciones { flex-direction: column; }
+    #filters-container { flex-wrap: wrap; }
 }

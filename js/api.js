@@ -60,3 +60,40 @@ export const deletePost = async (id) => {
 
     }
 }
+// POST nuevo
+export const createPost = async (titulo, cuerpo, autor) => {
+    try {
+        const response = await fetch(BASE_URL + '/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: titulo,
+                body: cuerpo,
+                userId: autor,
+                tags: [],
+                reactions: { likes: 0, dislikes: 0 },
+            }),
+        });
+        if (!response.ok) throw new Error('Error al crear el post');
+        return await response.json();
+    } catch (error) {
+        console.error('Error creando el post:', error);
+        throw error;
+    }
+};
+
+//actualizar un post existente
+export const updatePost = async (id, titulo, cuerpo) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: titulo, body: cuerpo }),
+        });
+        if (!response.ok) throw new Error('Error al actualizar el post');
+        return await response.json();
+    } catch (error) {
+        console.error('Error actualizando el post:', error);
+        throw error;
+    }
+};

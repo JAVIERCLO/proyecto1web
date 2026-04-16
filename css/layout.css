@@ -16,3 +16,10 @@
     max-width: 900px;
     margin: 0 auto;
 }
+
+/* NUEVO: layout para formulario */
+#form-section {
+    max-width: 600px;
+    margin: 0 auto;
+    animation: fadeIn 0.22s ease;
+}
