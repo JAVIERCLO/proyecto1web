@@ -8,7 +8,9 @@ import {
     showListView,
     showCreateForm,  
     showEditForm,    
-    showToast,      
+    showToast,
+    showLoader,
+    hideLoader      
 } from './ui.js';
 import { validatePostForm, clearErrors } from './validation.js';
 
@@ -22,13 +24,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         createLayout();
         createFilters();
 
+        showLoader();
         const posts = await getPosts();
         listaDePosts = posts;
 
         renderPosts(posts);
+        hideLoader();
 
     } catch (error) {
         console.error('Error al cargar los posts');
+        hideLoader();
     }
 });
 
@@ -70,10 +75,17 @@ document.addEventListener('click', async (e) => {
     // para ver detalles 
     if (action === 'ver-detalle') {
         try {
+            showLoader();
+            
             const post = await getPostById(id);
             const user = await getUserById(post.userId);
+
+            hideLoader();
+
             showDetailView(post, user);
         } catch (error) {
+            hideLoader();
+
             console.error('Error al cargar el detalle');
             showToast('No se pudo cargar el detalle.', 'error');
         }
@@ -91,13 +103,22 @@ document.addEventListener('click', async (e) => {
         const postElement = e.target.closest('article');
 
         if (!id || !postElement) return;
+        if (!confirm('¿Seguro que deseas eliminar esta publicación?')) return;
 
         try {
+            
+            showLoader();
+
             await deletePost(id);
             removePostFromDOM(postElement);
             listaDePosts = listaDePosts.filter(p => p.id != id);
+
+            hideLoader();
+
             showToast('Publicacion eliminada correctamente.');
         } catch (error) {
+            hideLoader();
+
             console.error('Error al eliminar el post');
             showToast('No se pudo eliminar la publicacion.', 'error');
         }
@@ -108,12 +129,19 @@ document.addEventListener('click', async (e) => {
     if (action === 'eliminar-detalle') {
         if (!id) return;
         try {
+            showLoader();
+
             await deletePost(id);
             listaDePosts = listaDePosts.filter(p => p.id != id);
             showListView();
             renderPosts(applyFilters());
+
+            hideLoader();
+
             showToast('Publicacion eliminada correctamente.');
         } catch (error) {
+            hideLoader();
+
             console.error('Error al eliminar el post desde detalle');
             showToast('No se pudo eliminar la publicacion.', 'error');
         }
@@ -136,14 +164,20 @@ document.addEventListener('click', async (e) => {
         const autor  = form.querySelector('#form-autor').value.trim();
 
         try {
+            showLoader();
+
             const nuevoPost = await createPost(titulo, cuerpo, autor);
 
             listaDePosts.unshift(nuevoPost);
+
+            hideLoader();
 
             showListView();
             renderPosts(applyFilters());
             showToast('Publicacion creada correctamente.');
         } catch (error) {
+            hideLoader();
+
             console.error('Error al crear el post');
             showToast('No se pudo crear la publicacion.', 'error');
         }
@@ -164,10 +198,17 @@ document.addEventListener('click', async (e) => {
         if (formSection) formSection.remove();
 
         try {
+            showLoader();
+
             const post = await getPostById(id);
             const user = await getUserById(post.userId);
+
+            hideLoader();
+
             showDetailView(post, user);
         } catch {
+            hideLoader();
+
             showListView();
         }
         return;
@@ -183,6 +224,8 @@ document.addEventListener('click', async (e) => {
         const cuerpo = form.querySelector('#form-cuerpo').value.trim();
 
         try {
+            showLoader();
+
             const postActualizado = await updatePost(postId, titulo, cuerpo);
 
             const idx = listaDePosts.findIndex(p => p.id == postId);
@@ -194,9 +237,14 @@ document.addEventListener('click', async (e) => {
             if (formSection) formSection.remove();
 
             const user = await getUserById(listaDePosts[idx]?.userId ?? postActualizado.userId);
+
+            hideLoader();
+
             showDetailView({ ...postActualizado, tags: listaDePosts[idx]?.tags || [] }, user);
             showToast('Publicacion actualizada correctamente.');
         } catch (error) {
+            hideLoader();
+
             console.error('Error al actualizar el post');
             showToast('No se pudo actualizar la publicacion.', 'error');
         }

@@ -396,3 +396,23 @@ const crearCampoTextarea = (labelText, inputId, placeholder) => {
     grupo.appendChild(textarea);
     return grupo;
 };
+
+// Loader para estado de carga
+export const showLoader = () => {
+    if (document.getElementById('Loader')) return;
+
+    const loader = document.createElement('div');
+    loader.id = 'Loader';
+    loader.classList.add('Loader');
+    loader.innerHTML = `
+        <div class="spinner"></div>
+        <span>Cargando...</span>
+    `;
+    document.body.appendChild(loader);
+};
+
+// Ocultar loader
+export const hideLoader = () => {
+    const loader = document.getElementById('Loader');
+    if (loader) loader.remove();
+};
