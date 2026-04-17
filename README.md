@@ -41,6 +41,8 @@ Endpoints principales:
 
 ---
 
+![Screenshot de la página web](image.png)
+
 ## ▶️ Instrucciones para ejecutar el proyecto
 
 1. Clonar el repositorio:
@@ -55,4 +57,3 @@ Integrantes:
 Javier Chávez
 Diego Sandoval
 
-![Screenshot de la página web](image.png)
