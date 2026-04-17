@@ -18,7 +18,7 @@ import { validatePostForm, clearErrors } from './validation.js';
 
 // Estado global
 let listaDePosts = [];
-let filters = { text: '', author: '', tags: '' };
+let filters = { text: '', author: '', tags: [] };
 let currentPage = 1;
 const postsPerPage = 10;
 
@@ -53,9 +53,11 @@ const applyFilters = () => {
             filters.author === '' || post.userId == filters.author;
 
         const tagsMatch =
-            filters.tags === '' ||
-            (post.tags || []).some(tag =>
-                tag.toLowerCase().includes(filters.tags.toLowerCase())
+            filters.tags.length === 0 ||
+            filters.tags.every(fTag =>
+                (post.tags || []).some(tag =>
+                    tag.toLowerCase().includes(fTag)
+                )
             );
 
         return textMatch && authorMatch && tagsMatch;
@@ -78,10 +80,16 @@ document.addEventListener('input', (e) => {
             currentPage = 1;
             updateUI();
         }
-    if (e.target.id === 'filter-tags') 
-        { filters.tags   = e.target.value;
-            currentPage = 1;
-            updateUI(); }
+    if (e.target.classList.contains('filter-tag')) {
+        const inputs = document.querySelectorAll('.filter-tag');
+
+        filters.tags = Array.from(inputs)
+            .map(input => input.value.trim().toLowerCase())
+            .filter(val => val !== '');
+
+        currentPage = 1;
+        updateUI();
+        }
     if (e.target.id === 'filter-author') 
         { filters.author = e.target.value; 
             currentPage = 1; 
@@ -100,6 +108,23 @@ const paginatePosts = (posts) => {
 document.addEventListener('click', async (e) => {
     const action = e.target.dataset.action;
     const id     = e.target.dataset.id;
+
+    
+    if (action === 'add-tag') {
+        const container = document.getElementById('tags-container');
+        const inputs = container.querySelectorAll('.filter-tag');
+
+        if (inputs.length >= 3) return;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Tag ${inputs.length + 1}`;
+        input.classList.add('filter-tag');
+
+        container.appendChild(input);
+
+        return;
+    }
 
     // para ver detalles 
     if (action === 'ver-detalle') {
@@ -121,7 +146,6 @@ document.addEventListener('click', async (e) => {
         return;
     }
 
-    // 
     if (action === 'volver') {
         showListView();
         return;
@@ -135,7 +159,6 @@ document.addEventListener('click', async (e) => {
         if (!confirm('¿Seguro que deseas eliminar esta publicación?')) return;
 
         try {
-            
             showLoader();
 
             await deletePost(id);
@@ -280,22 +303,22 @@ document.addEventListener('click', async (e) => {
         return;
     }
 
-    // navegación inicio
+    // navegacion inicio
     if (action === 'nav-inicio') {
-        filters = { text: '', author: '', tags: '' };
+        filters = { text: '', author: '', tags: [] };
         currentPage = 1;
         showListView();
         updateUI();
         return;
     }
 
-    // navegación crear
+    // navegacion crear
     if (action === 'nav-crear') {
         showCreateForm();
         return;
     }
 
-    // navegación por autor (RF-08)
+    // navegacion por autor
     if (action === 'nav-ordenar-autores') {
         const ordenados = [...listaDePosts].sort((a, b) => a.userId - b.userId);
 

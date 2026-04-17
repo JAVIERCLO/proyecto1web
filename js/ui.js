@@ -95,25 +95,34 @@ export const createFilters = () => {
     const container = document.createElement('div');
     container.id = 'filters-container';
     
-// texto
     const inputFiltroTexto = document.createElement('input');
     inputFiltroTexto.type = 'text';
     inputFiltroTexto.placeholder = 'Filtrar por texto...';
     inputFiltroTexto.id = 'filter-text';
 
-// autor
     const inputFiltroAutor = document.createElement('input');
     inputFiltroAutor.type = 'number';
     inputFiltroAutor.placeholder = 'Filtrar por autor';
     inputFiltroAutor.id = 'filter-author';
 
-// tags
-    const inputFiltroTags = document.createElement('input');
-    inputFiltroTags.type = 'text';
-    inputFiltroTags.placeholder = 'Filtrar por tags';
-    inputFiltroTags.id = 'filter-tags';
+    const tagsContainer = document.createElement('div');
+    tagsContainer.id = 'tags-container';
 
-    // boton para abrir el formulario de nueva publicacion
+    const createTagInput = (index) => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Tag ${index + 1}`;
+        input.classList.add('filter-tag');
+        return input;
+    };
+
+    tagsContainer.appendChild(createTagInput(0));
+
+    const btnAddTag = document.createElement('button');
+    btnAddTag.textContent = '+';
+    btnAddTag.dataset.action = 'add-tag';
+    btnAddTag.classList.add('btn', 'btn--secondary');
+
     const btnNuevo = document.createElement('button');
     btnNuevo.textContent = 'Nueva publicacion';
     btnNuevo.classList.add('btn', 'btn--primary', 'btn--nuevo');
@@ -121,7 +130,8 @@ export const createFilters = () => {
 
     container.appendChild(inputFiltroTexto);
     container.appendChild(inputFiltroAutor);
-    container.appendChild(inputFiltroTags);
+    container.appendChild(tagsContainer);
+    container.appendChild(btnAddTag);
     container.appendChild(btnNuevo);
 
     document.body.appendChild(container);
