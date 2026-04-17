@@ -123,16 +123,10 @@ export const createFilters = () => {
     btnAddTag.dataset.action = 'add-tag';
     btnAddTag.classList.add('btn', 'btn--secondary');
 
-    const btnNuevo = document.createElement('button');
-    btnNuevo.textContent = 'Nueva publicacion';
-    btnNuevo.classList.add('btn', 'btn--primary', 'btn--nuevo');
-    btnNuevo.dataset.action = 'abrir-crear';
-
     container.appendChild(inputFiltroTexto);
     container.appendChild(inputFiltroAutor);
     container.appendChild(tagsContainer);
     container.appendChild(btnAddTag);
-    container.appendChild(btnNuevo);
 
     document.body.appendChild(container);
 };
@@ -446,11 +440,13 @@ export const renderPaginationControls = (totalPosts, currentPage) => {
     prev.textContent = 'Anterior';
     prev.disabled = currentPage === 1;
     prev.dataset.action = 'prev-page';
+    prev.classList.add('btn', 'btn--secondary');
 
     const next = document.createElement('button');
     next.textContent = 'Siguiente';
     next.disabled = currentPage === totalPages;
     next.dataset.action = 'next-page';
+    next.classList.add('btn', 'btn--primary');
 
     container.appendChild(prev);
     container.appendChild(next);
