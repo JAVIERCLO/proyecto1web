@@ -42,6 +42,8 @@ Endpoints principales:
 ---
 
 ![Screenshot de la página web](image.png)
+Video de demostración: https://www.youtube.com/watch?v=YqObmx_Sm4w 
+Página web: https://chicharronconpelos.shop/javierchavez23132/proyecto1web/index.html
 
 ## ▶️ Instrucciones para ejecutar el proyecto
 
@@ -51,9 +53,11 @@ Endpoints principales:
 git clone https://github.com/JAVIERCLO/proyecto1web
 
 ---
+```
 
 Integrantes:
 
 Javier Chávez
 Diego Sandoval
+
 
